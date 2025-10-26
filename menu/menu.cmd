@@ -22,9 +22,9 @@ set "NOMBRE_3=XML Cuenta Local sin Bloatware"
 set "ARCHIVO_3=config3.xml"
 
 :: Opcion 4
-set "URL_3=https://raw.githubusercontent.com/ChrisTitusTech/bypassnro/refs/heads/main/unattend.xml"
-set "NOMBRE_3=XML de ChrisTitusTech"
-set "ARCHIVO_3=config4.xml"
+set "URL_4=https://raw.githubusercontent.com/ChrisTitusTech/bypassnro/refs/heads/main/unattend.xml"
+set "NOMBRE_4=XML de ChrisTitusTech"
+set "ARCHIVO_4=config4.xml"
 
 :: Directorio temporal (en WinPE usa X:\Temp o C:\Temp si ya hay particion)
 set "TEMP_DIR=C:\Temp"

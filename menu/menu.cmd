@@ -4,7 +4,7 @@ setlocal enabledelayedexpansion
 set "DEST=C:\Windows\Panther"
 set "NEWNAME=unattend.xml"
 
-set "TOTAL_OPCIONES=3"
+set "TOTAL_OPCIONES=4"
 
 :: Opcion 1
 set "URL_1=https://raw.githubusercontent.com/owicrontech-mex/bypassNRO/refs/heads/main/UserOwicron.xml"
@@ -12,14 +12,19 @@ set "NOMBRE_1=XML de Owicron Tech"
 set "ARCHIVO_1=config1.xml"
 
 :: Opcion 2
-set "URL_2=https://raw.githubusercontent.com/ChrisTitusTech/bypassnro/refs/heads/main/unattend.xml"
-set "NOMBRE_2=XML de Chris Titus Tech"
+set "URL_2=https://raw.githubusercontent.com/owicrontech-mex/bypassNRO/refs/heads/main/menu/LocalAccount.xml"
+set "NOMBRE_2=XML Cuenta Local con Bloatware"
 set "ARCHIVO_2=config2.xml"
 
 :: Opcion 3
-set "URL_3=https://raw.githubusercontent.com/memstechtips/UnattendedWinstall/refs/heads/main/autounattend.xml"
-set "NOMBRE_3=XML de MemsTechTips"
+set "URL_3=https://raw.githubusercontent.com/owicrontech-mex/bypassNRO/refs/heads/main/menu/LocalCuenta.xml"
+set "NOMBRE_3=XML Cuenta Local sin Bloatware"
 set "ARCHIVO_3=config3.xml"
+
+:: Opcion 4
+set "URL_3=https://raw.githubusercontent.com/ChrisTitusTech/bypassnro/refs/heads/main/unattend.xml"
+set "NOMBRE_3=XML de ChrisTitusTech"
+set "ARCHIVO_3=config4.xml"
 
 :: Directorio temporal (en WinPE usa X:\Temp o C:\Temp si ya hay particion)
 set "TEMP_DIR=C:\Temp"

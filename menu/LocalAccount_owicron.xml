@@ -1,0 +1,733 @@
+<?xml version="1.0" encoding="utf-8"?>
+<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+	<!--https://schneegans.de/windows/unattend-generator/?LanguageMode=Interactive&ProcessorArchitecture=x86&ProcessorArchitecture=amd64&ProcessorArchitecture=arm64&BypassRequirementsCheck=true&BypassNetworkCheck=true&ComputerNameMode=Script&ComputerNameScript=return+Read-Host+-Prompt+%27Escriba+el+nombre+del+Equipo%27%3B&CompactOsMode=Default&TimeZoneMode=Implicit&PartitionMode=Interactive&DiskAssertionMode=Skip&WindowsEditionMode=Interactive&InstallFromMode=Automatic&PEMode=Default&UserAccountMode=InteractiveLocal&PasswordExpirationMode=Default&LockoutMode=Default&HideFiles=Hidden&LaunchToThisPC=true&TaskbarSearch=Box&TaskbarIconsMode=Default&StartTilesMode=Default&StartPinsMode=Default&AllowPowerShellScripts=true&PreventDeviceEncryption=true&HideEdgeFre=true&DisableEdgeStartupBoost=true&DeleteWindowsOld=true&EffectsMode=Default&DesktopIconsMode=Default&StartFoldersMode=Default&WifiMode=Interactive&ExpressSettings=DisableAll&LockKeysMode=Skip&StickyKeysMode=Default&ColorMode=Custom&SystemColorTheme=Dark&AppsColorTheme=Dark&AccentColor=%23000000&EnableTransparency=true&WallpaperMode=Script&WallpaperScript=%23+Photo+by+Martin+Damboldt%3A+https%3A%2F%2Fwww.pexels.com%2Fphoto%2Fgray-bridge-and-trees-814499%2F%0D%0A%24url+%3D+%27https%3A%2F%2Fimages.pexels.com%2Fphotos%2F34109835%2Fpexels-photo-34109835.jpeg%27%3B%0D%0Areturn+%28+Invoke-WebRequest+-Uri+%24url+-UseBasicParsing+-TimeoutSec+30+%29.Content%3B&LockScreenMode=Default&SystemScript0=function+New-PowerShellShortcut+%7B%0D%0A++++%5BCmdletBinding%28%29%5D%0D%0A++++param%28%0D%0A++++++++%5BParameter%28Mandatory+%3D+%24true%29%5D%0D%0A++++++++%5Bstring%5D%24FilePath%2C%0D%0A++++++++%0D%0A++++++++%5BParameter%28Mandatory+%3D+%24true%29%5D%0D%0A++++++++%5Bstring%5D%24Command%2C%0D%0A++++++++%0D%0A++++++++%5BParameter%28Mandatory+%3D+%24false%29%5D%0D%0A++++++++%5Bstring%5D%24Arguments+%3D+%27-NoProfile+-ExecutionPolicy+Bypass%27%2C%0D%0A++++++++%0D%0A++++++++%5BParameter%28Mandatory+%3D+%24false%29%5D%0D%0A++++++++%5Bswitch%5D%24RunAsAdmin%2C%0D%0A++++++++%0D%0A++++++++%5BParameter%28Mandatory+%3D+%24false%29%5D%0D%0A++++++++%5Bswitch%5D%24AddDefenderExclusion%0D%0A++++%29%0D%0A++++%0D%0A++++%23+Si+se+requiere+exclusi%C3%B3n+del+Defender%2C+agregarla+ANTES+de+crear+el+archivo%0D%0A++++if+%28%24AddDefenderExclusion%29+%7B%0D%0A++++++++try+%7B%0D%0A++++++++++++Write-Verbose+%22Agregando+exclusi%C3%B3n+de+Windows+Defender+para%3A+%24FilePath%22%0D%0A++++++++++++Add-MpPreference+-ExclusionPath+%24FilePath+-ErrorAction+Stop%0D%0A++++++++++++Write-Verbose+%22Exclusi%C3%B3n+agregada+exitosamente%22%0D%0A++++++++%7D%0D%0A++++++++catch+%7B%0D%0A++++++++++++if+%28%24_.Exception.Message+-like+%22*Access+is+denied*%22+-or+%24_.Exception.Message+-like+%22*Acceso+denegado*%22%29+%7B%0D%0A++++++++++++++++Write-Warning+%22Se+requieren+permisos+de+administrador+para+agregar+exclusiones+al+Defender%22%0D%0A++++++++++++++++Write-Warning+%22Ejecute+PowerShell+como+administrador+o+use%3A+Start-Process+PowerShell+-Verb+RunAs%22%0D%0A++++++++++++%7D%0D%0A++++++++++++else+%7B%0D%0A++++++++++++++++Write-Warning+%22No+se+pudo+agregar+la+exclusi%C3%B3n+al+Defender%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++++++++++%7D%0D%0A++++++++%7D%0D%0A++++%7D%0D%0A++++%0D%0A++++%23+Crear+objeto+COM+WScript.Shell%0D%0A++++%24wsh+%3D+New-Object+-ComObject+%27WScript.Shell%27%0D%0A++++%0D%0A++++%23+Crear+el+acceso+directo%0D%0A++++%24shortcut+%3D+%24wsh.CreateShortcut%28%24FilePath%29%0D%0A++++%0D%0A++++%23+Configurar+propiedades%0D%0A++++%24shortcut.TargetPath+%3D+%27powershell.exe%27%0D%0A++++%24shortcut.Arguments+%3D+%22%24Arguments+-Command+%60%22%24Command%60%22%22%0D%0A++++%24shortcut.IconLocation+%3D+%22powershell.exe%2C0%22%0D%0A++++%0D%0A++++%23+Guardar+el+acceso+directo%0D%0A++++%24shortcut.Save%28%29%0D%0A++++%0D%0A++++%23+Si+se+requiere+ejecutar+como+administrador%2C+modificar+el+archivo+.lnk%0D%0A++++if+%28%24RunAsAdmin%29+%7B%0D%0A++++++++try+%7B%0D%0A++++++++++++%23+Leer+el+archivo+.lnk+como+array+de+bytes%0D%0A++++++++++++%24bytes+%3D+%5BSystem.IO.File%5D%3A%3AReadAllBytes%28%24FilePath%29%0D%0A++++++++++++%0D%0A++++++++++++%23+Establecer+el+bit+6+%280x20%29+del+byte+21+%280x15%29+para+activar+RunAsAdministrator%0D%0A++++++++++++%24bytes%5B0x15%5D+%3D+%24bytes%5B0x15%5D+-bor+0x20%0D%0A++++++++++++%0D%0A++++++++++++%23+Escribir+los+bytes+modificados+de+vuelta+al+archivo%0D%0A++++++++++++%5BSystem.IO.File%5D%3A%3AWriteAllBytes%28%24FilePath%2C+%24bytes%29%0D%0A++++++++++++%0D%0A++++++++++++Write-Verbose+%22Configurado+para+ejecutar+como+administrador%22%0D%0A++++++++%7D%0D%0A++++++++catch+%7B%0D%0A++++++++++++Write-Warning+%22No+se+pudo+configurar+la+ejecuci%C3%B3n+como+administrador%3A+%24%28%24_.Exception.Message%29%22%0D%0A++++++++%7D%0D%0A++++%7D%0D%0A++++%0D%0A++++Write-Verbose+%22Acceso+directo+creado+exitosamente%3A+%24FilePath%22%0D%0A%7D%0D%0A%0D%0A%0D%0A%23+Crear+el+acceso+directo+en+el+escritorio%0D%0A%23+Utileria+de+Chris+Titus+Win%0D%0ANew-PowerShellShortcut+-FilePath+%27C%3A%5CUsers%5CPublic%5CDesktop%5CChris+Titus+Win+Utility.lnk%27+-Command+%22powershell.exe+-NoProfile+-ExecutionPolicy+Bypass+-Command+%27irm+https%3A%2F%2Fchristitus.com%2Fwin+%7C+iex%27%22+-RunAsAdmin+-AddDefenderExclusion%0D%0A%23+Vitamina%0D%0ANew-PowerShellShortcut+-FilePath+%27C%3A%5CUsers%5CPublic%5CDesktop%5CVitamina+Massgrave.lnk%27+-Command+%22powershell.exe+-NoProfile+-ExecutionPolicy+Bypass+-Command+%27irm+https%3A%2F%2Fget.activated.win+%7C+iex%27%22+-RunAsAdmin+-AddDefenderExclusion%0D%0A%0D%0A%23+Disable+Defender+Auto+Sample+Submission%0D%0A++Set-MpPreference+-SubmitSamplesConsent+2+-ErrorAction+Continue+%7C+Out-Null%0D%0A%0D%0A%23+Groups+or+splits+svchost.exe+processes+based+on+the+amount+of+physical+memory+in+the+system+to+optimize+performance%0D%0A++%24ram+%3D+%28Get-CimInstance+-ClassName+Win32_PhysicalMemory+%7C+Measure-Object+-Property+Capacity+-Sum%29.Sum+%2F+1kb%0D%0A++Set-ItemProperty+-Path+%22HKLM%3A%5CSYSTEM%5CCurrentControlSet%5CControl%22+-Name+%22SvcHostSplitThresholdInKB%22+-Type+DWord+-Value+%24ram+-Force%0D%0A%0D%0A%23+Configurar+URL+y+destino%0D%0A%24url1+%3D+%22https%3A%2F%2Fgithub.com%2Fmemstechtips%2FWinhance%2Freleases%2Flatest%2Fdownload%2FWinhance.Installer.exe%22%0D%0A%24dest1+%3D+%22C%3A%5CUsers%5CPublic%5CDesktop%5CWinhance.exe%22%0D%0A%24url2+%3D+%22https%3A%2F%2Fc2rsetup.officeapps.live.com%2Fc2r%2Fdownload.aspx%3FProductreleaseID%3DProPlus2024Retail%26platform%3Dx64%26language%3Des-es%26version%3DO16GA%22%0D%0A%24dest2+%3D+%22C%3A%5CUsers%5CPublic%5CDesktop%5COfficeInstaller2024x64.exe%22%0D%0A%24url3+%3D+%22https%3A%2F%2Fgithub.com%2Fthebookisclosed%2FViVe%2Freleases%2Fdownload%2Fv0.3.4%2FViVeTool-v0.3.4-IntelAmd.zip%22%0D%0A%24dest3+%3D+%22C%3A%5CTemp%5CVivetool.zip%22%0D%0ANew-Item+-Path+%27C%3A%5CTemp%27+-ItemType+Directory+-Force%0D%0A%23+Test+de+conectividad+y+descarga%0D%0Aif+%28%28Test-Connection+-ComputerName+%228.8.8.8%22+-Count+1+-Quiet%29%29+%7B%0D%0A++++%28New-Object+System.Net.WebClient%29.DownloadFile%28%24url1%2C+%24dest1%29%0D%0A++++%28New-Object+System.Net.WebClient%29.DownloadFile%28%24url2%2C+%24dest2%29%0D%0A++++%28New-Object+System.Net.WebClient%29.DownloadFile%28%24url3%2C+%24dest3%29%0D%0A%7D&SystemScriptType0=Ps1&FirstLogonScript0=if+exist+%22C%3A%5CTemp%5CVivetool.zip%22+%28%0D%0Amkdir+%22C%3A%5CWindows%5CVivetool%22+2%3Enul%0D%0Apowershell.exe+-Command+%22Expand-Archive+-Path+%27C%3A%5CTemp%5CVivetool.zip%27+-DestinationPath+%27C%3A%5CWindows%5CVivetool%27+-Force%22%0D%0Aif+%25errorlevel%25+equ+0+%28%0D%0Afor+%2Fr+%22C%3A%5CWindows%5CVivetool%22+%25%25f+in+%28vivetool.exe%29+do+%28%0D%0Aif+exist+%22%25%25f%22+%28%0D%0A%22%25%25f%22+%2Fenable+%2Fid%3A47205210%2C49221331%2C49402389%2C48433719%2C49381526%2C49820095%2C55495322%2C57048216%2C49453572%0D%0A%29%0D%0A%29%0D%0Adel+%22C%3A%5CTemp%5CVivetool.zip%22+2%3Enul%0D%0A%29%0D%0A%29%0D%0A&FirstLogonScriptType0=Cmd&FirstLogonScript1=Add-Type+-AssemblyName+PresentationFramework%0D%0A%5BSystem.Windows.MessageBox%5D%3A%3AShow%28%22La+instalaci%C3%B3n+desatendida+ha+finalizado.+El+equipo+se+reiniciar%C3%A1+en+breve.%22%2C%22Finalizaci%C3%B3n%22%29%0D%0ARestart-Computer+-Force&FirstLogonScriptType1=Ps1&WdacMode=Skip-->
+	<settings pass="offlineServicing"></settings>
+	<settings pass="windowsPE">
+		<component name="Microsoft-Windows-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserData>
+				<ProductKey>
+					<Key>00000-00000-00000-00000-00000</Key>
+					<WillShowUI>Always</WillShowUI>
+				</ProductKey>
+				<AcceptEula>true</AcceptEula>
+			</UserData>
+			<UseConfigurationSet>false</UseConfigurationSet>
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+		<component name="Microsoft-Windows-Setup" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserData>
+				<ProductKey>
+					<Key>00000-00000-00000-00000-00000</Key>
+					<WillShowUI>Always</WillShowUI>
+				</ProductKey>
+				<AcceptEula>true</AcceptEula>
+			</UserData>
+			<UseConfigurationSet>false</UseConfigurationSet>
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+		<component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<UserData>
+				<ProductKey>
+					<Key>00000-00000-00000-00000-00000</Key>
+					<WillShowUI>Always</WillShowUI>
+				</ProductKey>
+				<AcceptEula>true</AcceptEula>
+			</UserData>
+			<UseConfigurationSet>false</UseConfigurationSet>
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassTPMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassSecureBootCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe add "HKLM\SYSTEM\Setup\LabConfig" /v BypassRAMCheck /t REG_DWORD /d 1 /f</Path>
+				</RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="generalize"></settings>
+	<settings pass="specialize">
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<ComputerName>TEMPNAME</ComputerName>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<ComputerName>TEMPNAME</ComputerName>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<ComputerName>TEMPNAME</ComputerName>
+		</component>
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\Specialize.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\DefaultUser.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+                <!-- Disable All Network Adapters Temporarily so Windows Doesn't Update During OOBE -->
+                    <Order>14</Order>
+                    <Path>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Get-NetAdapter | Disable-NetAdapter -Confirm:$false"</Path>
+                </RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\Specialize.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\DefaultUser.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+                <!-- Disable All Network Adapters Temporarily so Windows Doesn't Update During OOBE -->
+                    <Order>14</Order>
+                    <Path>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Get-NetAdapter | Disable-NetAdapter -Confirm:$false"</Path>
+                </RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+		<component name="Microsoft-Windows-Deployment" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<RunSynchronous>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>1</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "$xml = [xml]::new(); $xml.Load('C:\Windows\Panther\unattend.xml'); $sb = [scriptblock]::Create( $xml.unattend.Extensions.ExtractScript ); Invoke-Command -ScriptBlock $sb -ArgumentList $xml;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\Specialize.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>3</Order>
+					<Path>reg.exe load "HKU\DefaultUser" "C:\Users\Default\NTUSER.DAT"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>4</Order>
+					<Path>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\DefaultUser.ps1' -Raw | Invoke-Expression;"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+					<Order>5</Order>
+					<Path>reg.exe unload "HKU\DefaultUser"</Path>
+				</RunSynchronousCommand>
+				<RunSynchronousCommand wcm:action="add">
+                <!-- Disable All Network Adapters Temporarily so Windows Doesn't Update During OOBE -->
+                    <Order>14</Order>
+                    <Path>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Get-NetAdapter | Disable-NetAdapter -Confirm:$false"</Path>
+                </RunSynchronousCommand>
+			</RunSynchronous>
+		</component>
+	</settings>
+	<settings pass="auditSystem"></settings>
+	<settings pass="auditUser"></settings>
+	<settings pass="oobeSystem">
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="x86" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<OOBE>
+				<ProtectYourPC>3</ProtectYourPC>
+				<HideEULAPage>true</HideEULAPage>
+				<HideWirelessSetupInOOBE>false</HideWirelessSetupInOOBE>
+				<HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+			</OOBE>
+			<FirstLogonCommands>
+			    <SynchronousCommand wcm:action="add">
+                <!-- Enables Network Adapters After OOBE Completes -->
+                    <Order>1</Order>
+                    <CommandLine>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Get-NetAdapter | Enable-NetAdapter -Confirm:$false"</CommandLine>
+                </SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<CommandLine>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\FirstLogon.ps1' -Raw | Invoke-Expression;"</CommandLine>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="arm64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<OOBE>
+				<ProtectYourPC>3</ProtectYourPC>
+				<HideEULAPage>true</HideEULAPage>
+				<HideWirelessSetupInOOBE>false</HideWirelessSetupInOOBE>
+				<HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+			</OOBE>
+			<FirstLogonCommands>
+			    <SynchronousCommand wcm:action="add">
+                <!-- Enables Network Adapters After OOBE Completes -->
+                    <Order>1</Order>
+                    <CommandLine>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Get-NetAdapter | Enable-NetAdapter -Confirm:$false"</CommandLine>
+                </SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<CommandLine>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\FirstLogon.ps1' -Raw | Invoke-Expression;"</CommandLine>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+		<component name="Microsoft-Windows-Shell-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+			<OOBE>
+				<ProtectYourPC>3</ProtectYourPC>
+				<HideEULAPage>true</HideEULAPage>
+				<HideWirelessSetupInOOBE>false</HideWirelessSetupInOOBE>
+				<HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+			</OOBE>
+			<FirstLogonCommands>
+			    <SynchronousCommand wcm:action="add">
+                <!-- Enables Network Adapters After OOBE Completes -->
+                    <Order>1</Order>
+                    <CommandLine>powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "Get-NetAdapter | Enable-NetAdapter -Confirm:$false"</CommandLine>
+                </SynchronousCommand>
+				<SynchronousCommand wcm:action="add">
+					<Order>2</Order>
+					<CommandLine>powershell.exe -WindowStyle Normal -NoProfile -Command "Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\FirstLogon.ps1' -Raw | Invoke-Expression;"</CommandLine>
+				</SynchronousCommand>
+			</FirstLogonCommands>
+		</component>
+	</settings>
+	<Extensions xmlns="https://schneegans.de/windows/unattend-generator/">
+		<ExtractScript>
+param(
+    [xml] $Document
+);
+
+foreach( $file in $Document.unattend.Extensions.File ) {
+    $path = [System.Environment]::ExpandEnvironmentVariables( $file.GetAttribute( 'path' ) );
+    mkdir -Path( $path | Split-Path -Parent ) -ErrorAction 'SilentlyContinue';
+    $encoding = switch( [System.IO.Path]::GetExtension( $path ) ) {
+        { $_ -in '.ps1', '.xml' } { [System.Text.Encoding]::UTF8; }
+        { $_ -in '.reg', '.vbs', '.js' } { [System.Text.UnicodeEncoding]::new( $false, $true ); }
+        default { [System.Text.Encoding]::Default; }
+    };
+    $bytes = $encoding.GetPreamble() + $encoding.GetBytes( $file.InnerText.Trim() );
+    [System.IO.File]::WriteAllBytes( $path, $bytes );
+}
+		</ExtractScript>
+		<File path="C:\Windows\Setup\Scripts\GetComputerName.ps1">
+return Read-Host -Prompt 'Escriba el nombre del Equipo';
+		</File>
+		<File path="C:\Windows\Setup\Scripts\SetComputerName.ps1">
+$ErrorActionPreference = 'Stop';
+Set-StrictMode -Version 'Latest';
+&amp; {
+	$newName = ( Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\ComputerName.txt' -Raw ).Trim();
+	if( [string]::IsNullOrWhitespace( $newName ) ) {
+		throw "No computer name was provided.";
+	}
+
+	$keys = @(
+		@{
+			LiteralPath = 'Registry::HKLM\SYSTEM\CurrentControlSet\Control\ComputerName\ComputerName';
+			Name = 'ComputerName';
+		};
+		@{
+			LiteralPath = 'Registry::HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters';
+			Name = 'Hostname';
+		};
+		@{
+			LiteralPath = 'Registry::HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters';
+			Name = 'NV Hostname';
+		};
+	);
+
+	while( $true ) {
+		foreach( $key in $keys ) {
+			Set-ItemProperty @key -Type 'String' -Value $newName;
+		}
+		Start-Sleep -Milliseconds 50;
+	}
+} *&gt;&amp;1 &gt;&gt; 'C:\Windows\Setup\Scripts\SetComputerName.log';
+		</File>
+		<File path="C:\Windows\Setup\Scripts\SetColorTheme.ps1">
+$lightThemeSystem = 0;
+$lightThemeApps = 0;
+$accentColorOnStart = 0;
+$enableTransparency = 1;
+$htmlAccentColor = '#000000';
+&amp; {
+	$params = @{
+		LiteralPath = 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize';
+		Force = $true;
+		Type = 'DWord';
+	};
+	Set-ItemProperty @params -Name 'SystemUsesLightTheme' -Value $lightThemeSystem;
+	Set-ItemProperty @params -Name 'AppsUseLightTheme' -Value $lightThemeApps;
+	Set-ItemProperty @params -Name 'ColorPrevalence' -Value $accentColorOnStart;
+	Set-ItemProperty @params -Name 'EnableTransparency' -Value $enableTransparency;
+};
+&amp; {
+	Add-Type -AssemblyName 'System.Drawing';
+	$accentColor = [System.Drawing.ColorTranslator]::FromHtml( $htmlAccentColor );
+
+	function ConvertTo-DWord {
+		param(
+			[System.Drawing.Color]
+			$Color
+		);
+						
+		[byte[]] $bytes = @(
+			$Color.R;
+			$Color.G;
+			$Color.B;
+			$Color.A;
+		);
+		return [System.BitConverter]::ToUInt32( $bytes, 0); 
+	}
+
+	$startColor = [System.Drawing.Color]::FromArgb( 0xD2, $accentColor );
+	Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent' -Name 'StartColorMenu' -Value( ConvertTo-DWord -Color $accentColor ) -Type 'DWord' -Force;
+	Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent' -Name 'AccentColorMenu' -Value( ConvertTo-DWord -Color $accentColor ) -Type 'DWord' -Force;
+	Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\DWM' -Name 'AccentColor' -Value( ConvertTo-DWord -Color $accentColor ) -Type 'DWord' -Force;
+	$params = @{
+		LiteralPath = 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Accent';
+		Name = 'AccentPalette';
+	};
+	$palette = Get-ItemPropertyValue @params;
+	$index = 20;
+	$palette[ $index++ ] = $accentColor.R;
+	$palette[ $index++ ] = $accentColor.G;
+	$palette[ $index++ ] = $accentColor.B;
+	$palette[ $index++ ] = $accentColor.A;
+	Set-ItemProperty @params -Value $palette -Type 'Binary' -Force;
+};
+		</File>
+		<File path="C:\Windows\Setup\Scripts\GetWallpaper.ps1">
+# Photo by Martin Damboldt: https://www.pexels.com/photo/gray-bridge-and-trees-814499/
+$url = 'https://images.pexels.com/photos/34109835/pexels-photo-34109835.jpeg';
+return ( Invoke-WebRequest -Uri $url -UseBasicParsing -TimeoutSec 30 ).Content;
+		</File>
+		<File path="C:\Windows\Setup\Scripts\SetWallpaper.ps1">
+Add-Type -TypeDefinition '
+	using System.Drawing;
+	using System.Runtime.InteropServices;
+	
+	public static class WallpaperSetter {
+		[DllImport("user32.dll")]
+		private static extern bool SetSysColors(
+			int cElements, 
+			int[] lpaElements,
+			int[] lpaRgbValues
+		);
+
+		[DllImport("user32.dll")]
+		private static extern bool SystemParametersInfo(
+			uint uiAction,
+			uint uiParam,
+			string pvParam,
+			uint fWinIni
+		);
+
+		public static void SetDesktopBackground(Color color) {
+			SystemParametersInfo(20, 0, "", 0);
+			SetSysColors(1, new int[] { 1 }, new int[] { ColorTranslator.ToWin32(color) });
+		}
+
+		public static void SetDesktopImage(string file) {
+			SystemParametersInfo(20, 0, file, 0);
+		}
+	}
+' -ReferencedAssemblies 'System.Drawing';
+
+function Set-WallpaperColor {
+	param(
+		[string]
+		$HtmlColor
+	);
+
+	$color = [System.Drawing.ColorTranslator]::FromHtml( $HtmlColor );
+	[WallpaperSetter]::SetDesktopBackground( $color );
+	Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Type 'DWord' -Value 1 -Force;
+	Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Type 'String' -Value '' -Force;
+	Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Colors' -Name 'Background' -Type 'String' -Value "$($color.R) $($color.G) $($color.B)" -Force;
+}
+
+function Set-WallpaperImage {
+	param(
+		[string]
+		$LiteralPath
+	);
+
+	if( $LiteralPath | Test-Path ) {
+		[WallpaperSetter]::SetDesktopImage( $LiteralPath );
+		Set-ItemProperty -Path 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name 'BackgroundType' -Type 'DWord' -Value 0 -Force;
+		Set-ItemProperty -Path 'Registry::HKCU\Control Panel\Desktop' -Name 'WallPaper' -Type 'String' -Value $LiteralPath -Force;
+	} else {
+		"Cannot use '$LiteralPath' as a desktop wallpaper because that file does not exist.";
+	}
+}
+Set-WallpaperImage -LiteralPath 'C:\Windows\Setup\Scripts\Wallpaper';
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-01.ps1">
+function New-PowerShellShortcut {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$FilePath,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$Command,
+        
+        [Parameter(Mandatory = $false)]
+        [string]$Arguments = '-NoProfile -ExecutionPolicy Bypass',
+        
+        [Parameter(Mandatory = $false)]
+        [switch]$RunAsAdmin,
+        
+        [Parameter(Mandatory = $false)]
+        [switch]$AddDefenderExclusion
+    )
+    
+    # Si se requiere exclusi&#xF3;n del Defender, agregarla ANTES de crear el archivo
+    if ($AddDefenderExclusion) {
+        try {
+            Write-Verbose "Agregando exclusi&#xF3;n de Windows Defender para: $FilePath"
+            Add-MpPreference -ExclusionPath $FilePath -ErrorAction Stop
+            Write-Verbose "Exclusi&#xF3;n agregada exitosamente"
+        }
+        catch {
+            if ($_.Exception.Message -like "*Access is denied*" -or $_.Exception.Message -like "*Acceso denegado*") {
+                Write-Warning "Se requieren permisos de administrador para agregar exclusiones al Defender"
+                Write-Warning "Ejecute PowerShell como administrador o use: Start-Process PowerShell -Verb RunAs"
+            }
+            else {
+                Write-Warning "No se pudo agregar la exclusi&#xF3;n al Defender: $($_.Exception.Message)"
+            }
+        }
+    }
+    
+    # Crear objeto COM WScript.Shell
+    $wsh = New-Object -ComObject 'WScript.Shell'
+    
+    # Crear el acceso directo
+    $shortcut = $wsh.CreateShortcut($FilePath)
+    
+    # Configurar propiedades
+    $shortcut.TargetPath = 'powershell.exe'
+    $shortcut.Arguments = "$Arguments -Command `"$Command`""
+    $shortcut.IconLocation = "powershell.exe,0"
+    
+    # Guardar el acceso directo
+    $shortcut.Save()
+    
+    # Si se requiere ejecutar como administrador, modificar el archivo .lnk
+    if ($RunAsAdmin) {
+        try {
+            # Leer el archivo .lnk como array de bytes
+            $bytes = [System.IO.File]::ReadAllBytes($FilePath)
+            
+            # Establecer el bit 6 (0x20) del byte 21 (0x15) para activar RunAsAdministrator
+            $bytes[0x15] = $bytes[0x15] -bor 0x20
+            
+            # Escribir los bytes modificados de vuelta al archivo
+            [System.IO.File]::WriteAllBytes($FilePath, $bytes)
+            
+            Write-Verbose "Configurado para ejecutar como administrador"
+        }
+        catch {
+            Write-Warning "No se pudo configurar la ejecuci&#xF3;n como administrador: $($_.Exception.Message)"
+        }
+    }
+    
+    Write-Verbose "Acceso directo creado exitosamente: $FilePath"
+}
+
+
+# Crear el acceso directo en el escritorio
+# Utileria de Chris Titus Win
+New-PowerShellShortcut -FilePath 'C:\Users\Public\Desktop\Chris Titus Win Utility.lnk' -Command "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'irm https://christitus.com/win | iex'" -RunAsAdmin -AddDefenderExclusion
+# Vitamina
+New-PowerShellShortcut -FilePath 'C:\Users\Public\Desktop\Vitamina Massgrave.lnk' -Command "powershell.exe -NoProfile -ExecutionPolicy Bypass -Command 'irm https://get.activated.win | iex'" -RunAsAdmin -AddDefenderExclusion
+
+# Disable Defender Auto Sample Submission
+  Set-MpPreference -SubmitSamplesConsent 2 -ErrorAction Continue | Out-Null
+
+# Groups or splits svchost.exe processes based on the amount of physical memory in the system to optimize performance
+  $ram = (Get-CimInstance -ClassName Win32_PhysicalMemory | Measure-Object -Property Capacity -Sum).Sum / 1kb
+  Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control" -Name "SvcHostSplitThresholdInKB" -Type DWord -Value $ram -Force
+
+# Configurar URL y destino
+$url1 = "https://github.com/memstechtips/Winhance/releases/latest/download/Winhance.Installer.exe"
+$dest1 = "C:\Users\Public\Desktop\Winhance.exe"
+$url2 = "https://c2rsetup.officeapps.live.com/c2r/download.aspx?ProductreleaseID=ProPlus2024Retail&amp;platform=x64&amp;language=es-es&amp;version=O16GA"
+$dest2 = "C:\Users\Public\Desktop\OfficeInstaller2024x64.exe"
+$url3 = "https://github.com/thebookisclosed/ViVe/releases/download/v0.3.4/ViVeTool-v0.3.4-IntelAmd.zip"
+$dest3 = "C:\Temp\Vivetool.zip"
+New-Item -Path 'C:\Temp' -ItemType Directory -Force
+# Test de conectividad y descarga
+if ((Test-Connection -ComputerName "8.8.8.8" -Count 1 -Quiet)) {
+    (New-Object System.Net.WebClient).DownloadFile($url1, $dest1)
+    (New-Object System.Net.WebClient).DownloadFile($url2, $dest2)
+    (New-Object System.Net.WebClient).DownloadFile($url3, $dest3)
+}
+write-output "Archivo terminado"
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-02.cmd">
+if exist "C:\Temp\Vivetool.zip" (
+mkdir "C:\Windows\Vivetool" 2&gt;nul
+powershell.exe -Command "Expand-Archive -Path 'C:\Temp\Vivetool.zip' -DestinationPath 'C:\Windows\Vivetool' -Force"
+if %errorlevel% equ 0 (
+for /r "C:\Windows\Vivetool" %%f in (vivetool.exe) do (
+if exist "%%f" (
+"%%f" /enable /id:47205210,49221331,49402389,48433719,49381526,49820095,55495322,57048216,49453572
+)
+)
+del "C:\Temp\Vivetool.zip" 2&gt;nul
+)
+)
+
+:: Se crea la tarea para borrar archivos temporales.
+schtasks /create /tn FinalClean /sc onlogon /rl highest /f /tr "cmd.exe /c C:\clean.cmd"
+:: Termina ejecucion de archivo.
+		</File>
+		<File path="C:\Windows\Setup\Scripts\unattend-03.ps1">
+		Start-Sleep -Seconds 300
+Add-Type -AssemblyName PresentationFramework
+[System.Windows.MessageBox]::Show("La instalaci&#xF3;n desatendida ha finalizado. El equipo se reiniciar&#xE1; en breve.","Finalizaci&#xF3;n")
+Restart-Computer -Force
+		</File>
+		<File path="C:\Windows\Setup\Scripts\Specialize.ps1">
+$scripts = @(
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\GetComputerName.ps1' -Raw | Invoke-Expression &gt; 'C:\Windows\Setup\Scripts\ComputerName.txt';
+		Start-Process -FilePath ( Get-Process -Id $PID ).Path -ArgumentList '-NoProfile', '-Command', 'Get-Content -LiteralPath "C:\Windows\Setup\Scripts\SetComputerName.ps1" -Raw | Invoke-Expression;' -WindowStyle 'Hidden';
+		Start-Sleep -Seconds 10;
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\Setup\MoSetup" /v AllowUpgradesWithUnsupportedTPMOrCPU /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OOBE" /v BypassNRO /t REG_DWORD /d 1 /f;
+	};
+	{
+		Set-ExecutionPolicy -Scope 'LocalMachine' -ExecutionPolicy 'RemoteSigned' -Force;
+	};
+	{
+		reg.exe add "HKLM\SYSTEM\CurrentControlSet\Control\BitLocker" /v "PreventDeviceEncryption" /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\Software\Policies\Microsoft\Edge" /v HideFirstRunExperience /t REG_DWORD /d 1 /f;
+	};
+	{
+		reg.exe add "HKLM\Software\Policies\Microsoft\Edge\Recommended" /v BackgroundModeEnabled /t REG_DWORD /d 0 /f;
+		reg.exe add "HKLM\Software\Policies\Microsoft\Edge\Recommended" /v StartupBoostEnabled /t REG_DWORD /d 0 /f;
+	};
+	{
+		try {
+		  $bytes = Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\GetWallpaper.ps1' -Raw | Invoke-Expression;
+		  [System.IO.File]::WriteAllBytes( 'C:\Windows\Setup\Scripts\Wallpaper', $bytes );
+		} catch {
+		  $_;
+		}
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-01.ps1' -Raw | Invoke-Expression;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to customize your Windows installation. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\Specialize.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\UserOnce.ps1">
+$scripts = @(
+	{
+		Set-ItemProperty -LiteralPath 'Registry::HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -Name 'LaunchTo' -Type 'DWord' -Value 1;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\SetColorTheme.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\SetWallpaper.ps1' -Raw | Invoke-Expression;
+	};
+	{
+		Get-Process -Name 'explorer' -ErrorAction 'SilentlyContinue' | Where-Object -FilterScript {
+			$_.SessionId -eq ( Get-Process -Id $PID ).SessionId;
+		} | Stop-Process -Force;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to configure this user account. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "$env:TEMP\UserOnce.log";
+		</File>
+		<File path="C:\Windows\Setup\Scripts\DefaultUser.ps1">
+$scripts = @(
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\DWM" /v ColorPrevalence /t REG_DWORD /d 0 /f;
+	};
+	{
+		reg.exe add "HKU\DefaultUser\Software\Microsoft\Windows\CurrentVersion\RunOnce" /v "UnattendedSetup" /t REG_SZ /d "powershell.exe -WindowStyle Normal -NoProfile -Command \""Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\UserOnce.ps1' -Raw | Invoke-Expression;\""" /f;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to modify the default user&#x2019;&#x2019;s registry hive. Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\DefaultUser.log";
+		</File>
+		<File path="C:\clean.cmd">
+		rem -----------------------------
+rem Limpieza de ficheros temporales
+rem -----------------------------
+del /f /q "C:\Windows\Temp\*.ps1"
+del /f /q "C:\Windows\Temp\*.cmd"
+del /f /q "C:\Windows\Temp\*.reg"
+del /f /q "C:\Windows\Temp\*.bat"
+
+del /f /q "C:\Windows\Setup\Scripts\*.ps1"
+del /f /q "C:\Windows\Setup\Scripts\*.cmd"
+del /f /q "C:\Windows\Setup\Scripts\*.reg"
+del /f /q "C:\Windows\Setup\Scripts\*.bat"
+
+rem -----------------------------
+rem Borrar la tarea programada que ejecutó este script (si procede)
+rem -----------------------------
+schtasks /delete /tn "FinalClean" /f &gt;nul 2&gt;&amp;1
+
+rem -----------------------------
+rem Auto-borrado: lanzamos un proceso hijo que espera y borra este archivo
+rem -----------------------------
+start "" cmd /c "timeout /t 5 /nobreak &gt;nul &amp; del /f /q C:\clean.cmd"
+exit /b 0
+		</File>
+		<File path="C:\Windows\Setup\Scripts\FirstLogon.ps1">
+$scripts = @(
+	{
+		cmd.exe /c "rmdir C:\Windows.old";
+	};
+	{
+		C:\Windows\Setup\Scripts\unattend-02.cmd;
+	};
+	{
+		Get-Content -LiteralPath 'C:\Windows\Setup\Scripts\unattend-03.ps1' -Raw | Invoke-Expression;
+	};
+);
+
+&amp; {
+  [float] $complete = 0;
+  [float] $increment = 100 / $scripts.Count;
+  foreach( $script in $scripts ) {
+    Write-Progress -Activity 'Running scripts to finalize your Windows installation (FirstLogon). Do not close this window.' -PercentComplete $complete;
+    '*** Will now execute command &#xAB;{0}&#xBB;.' -f $(
+      $str = $script.ToString().Trim() -replace '\s+', ' ';
+      $max = 100;
+      if( $str.Length -le $max ) {
+        $str;
+      } else {
+        $str.Substring( 0, $max - 1 ) + '&#x2026;';
+      }
+    );
+    $start = [datetime]::Now;
+    &amp; $script;
+    '*** Finished executing command after {0:0} ms.' -f [datetime]::Now.Subtract( $start ).TotalMilliseconds;
+    "`r`n" * 3;
+    $complete += $increment;
+  }
+} *&gt;&amp;1 &gt;&gt; "C:\Windows\Setup\Scripts\FirstLogon.log";
+		</File>
+	</Extensions>
+</unattend>
